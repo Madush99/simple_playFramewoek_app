@@ -64,4 +64,21 @@ public class StudentController extends Controller{
             }).orElse(notFound(Util.createResponse("Student with id:" + id + " not found", false)));
         }, ec.current());
     }
+
+    public CompletionStage<Result> update(Http.Request request) {
+        JsonNode json = request.body().asJson();
+        return supplyAsync(() -> {
+            if (json == null) {
+                return badRequest(Util.createResponse("Expecting Json data", false));
+            }
+            Optional<Student> studentOptional = studentStore.updateStudents(Json.fromJson(json, Student.class));
+            return studentOptional.map(student -> {
+                if (student == null) {
+                    return notFound(Util.createResponse("Students not found", false));
+                }
+                JsonNode jsonObject = Json.toJson(student);
+                return ok(Util.createResponse(jsonObject, true));
+            }).orElse(internalServerError(Util.createResponse("Could not create data", false)));
+        }, ec.current());
+    }
 }
