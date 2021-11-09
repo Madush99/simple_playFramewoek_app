@@ -19,7 +19,7 @@ public class StudentStore {
         return Optional.ofNullable(students.get(id));
     }
 
-    public Set<Student> getAllStudents(int id) {
+    public Set<Student> getAllStudents() {
         return new HashSet<>(students.values());
     }
 

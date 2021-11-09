@@ -45,6 +45,16 @@ public class StudentController extends Controller{
             }).orElse(internalServerError(Util.createResponse("Could not create data.", false)));
         }, ec.current());
     }
+
+    public CompletionStage<Result> listStudents() {
+        return supplyAsync(() -> {
+            Set<Student> result = studentStore.getAllStudents();
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode jsonData = mapper.convertValue(result, JsonNode.class);
+            return ok(Util.createResponse(jsonData, true));
+        }, ec.current());
+    }
+
     public CompletionStage<Result> retrieve(int id) {
         return supplyAsync(() -> {
             final Optional<Student> studentOptional = studentStore.getStudent(id);
