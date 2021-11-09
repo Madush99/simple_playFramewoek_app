@@ -81,4 +81,14 @@ public class StudentController extends Controller{
             }).orElse(internalServerError(Util.createResponse("Could not create data", false)));
         }, ec.current());
     }
+
+    public CompletionStage<Result> delete(int id) {
+        return supplyAsync(() -> {
+            boolean status = studentStore.deleteStudent(id);
+            if(!status){
+                return notFound(Util.createResponse("Students with id: "+id+ "not found", false));
+            }
+            return ok(Util.createResponse("Student with id: " +id+ " deleted", true));
+        }, ec.current());
+    }
 }
